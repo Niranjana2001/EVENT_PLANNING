@@ -9,7 +9,10 @@ public class App{
         int a =Integer.parseInt(sc.nextLine());
         if(a==1){
             userregistration();
-        }else{
+        }else if(a==2){
+            userLogin();
+        }
+        else{
             System.out.println("else is working");
         }
         // String username=userregistration();
@@ -57,7 +60,7 @@ public class App{
             String adhaar_number=sc.nextLine();
             System.out.println("Enter Account number:");
             String account_number=sc.nextLine();
-            // userDetails = new String[]{username, password, name, address, city, email, phone_number, adhaar_number, account_number};
+            userDetails = new String[]{username, password, name, address, city, email, phone_number, adhaar_number, account_number};
             
              sql = "INSERT INTO user (username, password,name,address,city,email,phone_number,adhaar_number,account_number) VALUES ('" + userDetails[0] + "', '" + userDetails[1] + "' ,'"+ userDetails[2] +"','"+ userDetails[3] +"','"+ userDetails[4] +"','"+ userDetails[5] +"','"+ userDetails[6] +"','"+ userDetails[7] +"','"+ userDetails[8] +"')";
            statement.executeUpdate(sql);
@@ -81,7 +84,7 @@ public class App{
             String adhaar_number=sc.nextLine();
             System.out.println("Enter Account number:");
             String account_number=sc.nextLine();
-            // userDetails = new String[]{username, password, name, address, city, email, phone_number, adhaar_number, account_number};
+            userDetails = new String[]{username, password, name, address, city, email, phone_number, adhaar_number, account_number};
             
              sql = "INSERT INTO user (username, password,name,address,city,email,phone_number,adhaar_number,account_number) VALUES ('" + userDetails[0] + "', '" + userDetails[1] + "' ,'"+ userDetails[2] +"','"+ userDetails[3] +"','"+ userDetails[4] +"','"+ userDetails[5] +"','"+ userDetails[6] +"','"+ userDetails[7] +"','"+ userDetails[8] +"')";
            statement.executeUpdate(sql);
@@ -94,6 +97,51 @@ public class App{
         }
         return username;
     }
+    static String userLogin(){
+        String username=null;
+       
+        try{
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+            Scanner sc=new Scanner(System.in);
+            System.out.println("Enter your Username :");
+              username=sc.nextLine();
+             String[] userDetails = new String[9];
+             userDetails[0] = username;
+             PreparedStatement stm1 = connection.prepareStatement("SELECT password FROM user WHERE username = ?");
+             stm1.setString(1, username);
+
+          ResultSet resultSet = stm1.executeQuery();
+            if (resultSet.next()) {
+                System.out.println("Enter your Password: ");
+                String password = sc.nextLine();
+                String storedPassword = resultSet.getString("password");
+                if (password.equals(storedPassword)) {
+                    System.out.println("Login successful!");
+
+                } else {
+                    System.out.println("Incorrect Password");
+                    System.out.println("Try again!!!");
+                    
+
+                }
+                
+            } else {
+                System.out.println("Username does not exist. Login failed.");
+                userregistration();
+            }
+
+        }catch(Exception e){
+            System.out.println(e);
+        }
+       return username;
+    }
+
+           
+
+      
+    
     
   
     
