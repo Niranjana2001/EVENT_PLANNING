@@ -49,7 +49,48 @@ public class App{
         
         return userDetails;
     }
+    
+    static void dateavailability(String[] args) throws Exception {
+        Scanner scan=new Scanner(System.in);
+        System.out.println("Hello, World!");
+        System.out.println("Enter the date of the event in the format yyyy-mm-dd");
+        String eventdate=scan.nextLine();
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+            
+            PreparedStatement prepstatement = connection.prepareStatement("SELECT COUNT(*) FROM event WHERE event_date=?");
+            prepstatement.setString(1,eventdate);
+            // ResultSet resultSet=statement.executeQuery("SELECT * FROM caterer");
+            ResultSet rs=prepstatement.executeQuery();
+            rs.next();
+            int count=rs.getInt(1);
+            boolean dateavailable=true;
+            // while (resultSet.next()) {
+            //     ResultSetMetaData metaData = resultSet.getMetaData();
+            //     int columnCount = metaData.getColumnCount();
+            //     for (int i = 1; i <= columnCount; i++) {
+            //         System.out.print(resultSet.getString(i) + "\t");
+            //     }
+            //     System.out.println();
+            // }
+            if(count>0){
+                System.out.println("Event date not available");
+                dateavailable=false;
+            }
+                      
+
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+    }
 }
+
+
+
+
+
 
 
         
