@@ -12,6 +12,9 @@ public class App{
         }else{
             System.out.println("else is working");
         }
+        String eventdate=dateavailability(username);
+        String preferredlocation=locationbooking(username);
+
         
 
 
@@ -52,18 +55,20 @@ public class App{
             statement.executeUpdate(sql);
             
             System.out.println("Success");
+        
         } catch(Exception e){
             System.out.println(e);
         }
+        
     }
     
   
     
-    static void dateavailability(String[] args) throws Exception {
-        Scanner scan=new Scanner(System.in);
+    static String dateavailability(String username) throws Exception {
+        Scanner sc=new Scanner(System.in);
         System.out.println("Hello, World!");
         System.out.println("Enter the date of the event in the format yyyy-mm-dd");
-        String eventdate=scan.nextLine();
+        String eventdate=sc.nextLine();
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
@@ -74,7 +79,10 @@ public class App{
             ResultSet rs=prepstatement.executeQuery();
             rs.next();
             int count=rs.getInt(1);
-            boolean dateavailable=true;
+            // boolean dateavailable=true;
+            
+            
+            
             // while (resultSet.next()) {
             //     ResultSetMetaData metaData = resultSet.getMetaData();
             //     int columnCount = metaData.getColumnCount();
@@ -85,15 +93,54 @@ public class App{
             // }
             if(count>0){
                 System.out.println("Event date not available");
-                dateavailable=false;
-            }
+                System.out.println("Sorry for the inconvenience");
+                // dateavailable=false;
+            }else{
+                locationbooking(username);
+
+            // Statement statement=connection.createStatement();
+            // String sql = "INSERT INTO event (username, password,name,address,city,email,phone_number,adhaar_number,account_number) VALUES ('" + userDetails[0] + "', '" + userDetails[1] + "' ,'"+ userDetails[2] +"','"+ userDetails[3] +"','"+ userDetails[4] +"','"+ userDetails[5] +"','"+ userDetails[6] +"','"+ userDetails[7] +"','"+ userDetails[8] +"')";
+            // statement.executeUpdate(sql);
+            return eventdate;
                       
 
-        }
+        }}
         catch(Exception e){
             System.out.println(e);
         }
+        
     }
+    static String locationbooking(String username){
+        Scanner sc=new Scanner(System.in);
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+            PreparedStatement prepstatement1=connection.prepareStatement("SELECT city FROM user WHERE username=?");
+            prepstatement1.setString(1,username);
+            ResultSet rs1=prepstatement1.executeQuery();
+            rs1.next();
+            String usercity=rs1.getString(0);
+            System.out.println("The following are the location available on the date given : ");
+                PreparedStatement prepstatement2=connection.prepareStatement("SELECT location.location_name,location.city FROM location JOIN user ON location.city = user.city WHERE user.city = ?");
+                prepstatement2.setString(1,usercity);
+                ResultSet rs2=prepstatement2.executeQuery();
+                while(rs2.next()){
+                    ResultSetMetaData metadata=rs2.getMetaData();
+                    int column=metadata.getColumnCount();
+                    for (int i=0;i<=column;i++){
+                        System.out.println(rs2.getString(i) + "\t");
+                    }
+            }
+            System.out.println("Please select your preferred location : ");
+            String preferredlocation=sc.nextLine();
+            return preferredlocation;
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        
+            
+    }
+
 }
 
 
