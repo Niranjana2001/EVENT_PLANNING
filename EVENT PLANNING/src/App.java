@@ -7,15 +7,20 @@ public class App{
         System.out.println("Hello");
         System.out.println("Do you want to register or login (Register : 1,Login : 2) : ");
         int a =Integer.parseInt(sc.nextLine());
+        // String username="Niranjana2022";
         String username;
         if(a==1){
             username=userregistration();
             String eventdate=dateavailability(username);
             String preferredlocation=locationbooking(username);
+        }else if(a==2){
+            // username=userLogin();
+            String eventdate=dateavailability(username);
+            String preferredlocation=locationbooking(username);
         }else{
-            System.out.println("else is working");
+            System.out.println("Enter a valid input ,either 1 or 2");
         }
-        
+        // String preferredcaterer=caterer(username);
          
 
 
@@ -109,7 +114,6 @@ public class App{
             ResultSet rs1=prepstatement1.executeQuery();
             rs1.next();
             String usercity=rs1.getString(1);
-            System.out.println(usercity);
             System.out.println("The following are the location available on the date given : ");
             PreparedStatement prepstatement2=connection.prepareStatement("SELECT location.location_name,location.city FROM location JOIN user ON location.city = user.city WHERE user.city = ?");
             prepstatement2.setString(1,usercity);
@@ -161,6 +165,79 @@ public class App{
         }
         return eventdate;
     }
+
+//     static String caterer(String username){
+//         Scanner sc=new Scanner(System.in);
+//         System.out.println("Which is your food preference : \n1.Veg \n2.Non Veg \n3.Veg and Non Veg");
+//         int b = Integer.parseInt(sc.nextLine());
+//         String preferredcaterer=null;
+//         try{
+//             Class.forName("com.mysql.cj.jdbc.Driver");
+//             Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+//             PreparedStatement prepstatement3=connection.prepareStatement("SELECT city FROM user WHERE username=?");
+//             prepstatement3.setString(1,username);
+//             ResultSet rs3=prepstatement3.executeQuery();
+//             rs3.next();
+//             String usercity=rs3.getString(1);
+//             switch(b){
+//                 case 1:
+//                 System.out.println("Case 1 is working");
+//                 PreparedStatement prepstatement4 = connection.prepareStatement("SELECT enterprise_name,rate_per_head FROM caterer WHERE veg=1 AND non_veg=0 AND location=?");
+//                 prepstatement4.setString(1,usercity);
+//                 ResultSet rs4=prepstatement4.executeQuery();
+//                 System.out.println(usercity);
+//                 while(rs4.next()){
+//                     ResultSetMetaData metadata=rs4.getMetaData();
+//                     int column=metadata.getColumnCount();
+//                     for (int i=1;i<=column;i++){
+//                         System.out.println(rs4.getString(i) + "\t");
+//                     }
+//                     System.out.println();
+//                 }
+//                 System.out.println("Please select your preferred caterer : ");
+//                 preferredcaterer=sc.nextLine();
+//                 break;
+//                 case 2:
+//                 System.out.println("Case 2 is working");
+//                 PreparedStatement prepstatement5 = connection.prepareStatement("SELECT enterprise_name,rate_per_head FROM caterer WHERE veg=0 AND non_veg=1 AND location=?");
+//                 prepstatement5.setString(1,usercity);
+//                 ResultSet rs5=prepstatement5.executeQuery();
+//                 while(rs5.next()){
+//                     ResultSetMetaData metadata=rs5.getMetaData();
+//                     int column=metadata.getColumnCount();
+//                     for (int i=1;i<=column;i++){
+//                         System.out.println(rs5.getString(i) + "\t");
+//                     }
+//                     System.out.println();
+//                 }
+//                 System.out.println("Please select your preferred caterer : ");
+//                 preferredcaterer=sc.nextLine();
+//                 break;
+//                 case 3:
+//                 System.out.println("Case 3 is working");
+//                 PreparedStatement prepstatement6 = connection.prepareStatement("SELECT enterprise_name,rate_per_head FROM caterer WHERE veg=1 AND non_veg=0 AND location=?");
+//                 prepstatement6.setString(1,usercity);
+//                 ResultSet rs6=prepstatement6.executeQuery();
+//                 while(rs6.next()){
+//                     ResultSetMetaData metadata=rs6.getMetaData();
+//                     int column=metadata.getColumnCount();
+//                     for (int i=1;i<=column;i++){
+//                         System.out.println(rs6.getString(i) + "\t");
+//                     }
+//                     System.out.println();
+//                 }
+//                 System.out.println("Please select your preferred caterer : ");
+//                 preferredcaterer=sc.nextLine();
+//                 break;
+                
+//             }
+            
+// }
+//         catch(Exception e){
+//             System.out.println(e);
+//         }
+//         return preferredcaterer;
+//     }
     
 }
 
