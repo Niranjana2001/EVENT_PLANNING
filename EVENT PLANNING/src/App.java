@@ -12,17 +12,20 @@ public class App{
         String eventdate;
         String preferredlocation;
         String preferredcaterer;
+        String preferred_decteam;
         if(a==1){
             username=userregistration();
             eventdate=dateavailability(username);
             preferredlocation=locationbooking(username);
             preferredcaterer=caterer(username);
+            preferred_decteam=decoration(username);
             
         }else if(a==2){
             username=userLogin();
             eventdate=dateavailability(username);
             preferredlocation=locationbooking(username);
             preferredcaterer=caterer(username);
+            preferred_decteam=decoration(username);
         }
         else{
             System.out.println("else is working");
@@ -306,6 +309,41 @@ public class App{
             System.out.println(e);
         }
         return preferredcaterer;
+    }
+    static String decoration(String username){
+        String preferred_decteam=null;
+        try{
+            Scanner sc=new Scanner(System.in);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+            PreparedStatement stm2=connection.prepareStatement("SELECT city FROM user WHERE username=?");
+            stm2.setString(1,username);
+            ResultSet res=stm2.executeQuery();
+            res.next();
+            String usercity=res.getString(1);
+            PreparedStatement stm3 = connection.prepareStatement("SELECT DISTINCT enterprise_name,rate FROM decoration WHERE location=?");
+            stm3.setString(1,usercity);
+            ResultSet res1=stm3.executeQuery();
+            System.out.println(usercity);
+
+            while(res1.next()){
+                System.out.println("while loop");
+                ResultSetMetaData metadata=res1.getMetaData();
+                int column=metadata.getColumnCount();
+                for (int i=1;i<=column;i++){
+                    System.out.println(res1.getString(i) + "\t");
+                }
+                System.out.println();
+            }
+            System.out.println("Please select your preferred decoration team : ");
+            preferred_decteam=sc.nextLine();
+            
+
+
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        return preferred_decteam;
     }
     
 }
