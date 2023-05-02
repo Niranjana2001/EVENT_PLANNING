@@ -2,8 +2,22 @@ import java.sql.*;
 import java.util.*;
 
 public class App{
-    
-    public static void main(String[] args)  {
+    public static void main(String[] args){
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Hello");
+        System.out.println("Do you want to register or login (Register : 1,Login : 2) : ");
+        int a =Integer.parseInt(sc.nextLine());
+        if(a==1){
+            userregistration();
+        }else{
+            System.out.println("else is working");
+        }
+        
+
+
+
+    }
+    static void userregistration()  {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
@@ -12,21 +26,7 @@ public class App{
             System.out.println("Enter your details to register:");
             
             // Call the getUserInput() method to get the user input
-            String[] userDetails = getUserInput(sc);
-            
-            Statement statement=connection.createStatement();
-            String sql = "INSERT INTO user (username, password,name,address,city,email,phone_number,adhaar_number,account_number) VALUES ('" + userDetails[0] + "', '" + userDetails[1] + "' ,'"+ userDetails[2] +"','"+ userDetails[3] +"','"+ userDetails[4] +"','"+ userDetails[5] +"','"+ userDetails[6] +"','"+ userDetails[7] +"','"+ userDetails[8] +"')";
-            statement.executeUpdate(sql);
-            
-            System.out.println("Success");
-        } catch(Exception e){
-            System.out.println(e);
-        }
-    }
-    
-    // Create a separate method to get user input
-    public static String[] getUserInput(Scanner sc) {
-        System.out.println("Enter Username: ");
+            System.out.println("Enter Username: ");
         String username=sc.nextLine();
         System.out.println("Enter password:");
         String password=sc.nextLine();
@@ -46,9 +46,18 @@ public class App{
         String account_number=sc.nextLine();
         
         String[] userDetails = {username, password, name, address, city, email, phone_number, adhaar_number, account_number};
-        
-        return userDetails;
+            
+            Statement statement=connection.createStatement();
+            String sql = "INSERT INTO user (username, password,name,address,city,email,phone_number,adhaar_number,account_number) VALUES ('" + userDetails[0] + "', '" + userDetails[1] + "' ,'"+ userDetails[2] +"','"+ userDetails[3] +"','"+ userDetails[4] +"','"+ userDetails[5] +"','"+ userDetails[6] +"','"+ userDetails[7] +"','"+ userDetails[8] +"')";
+            statement.executeUpdate(sql);
+            
+            System.out.println("Success");
+        } catch(Exception e){
+            System.out.println(e);
+        }
     }
+    
+  
     
     static void dateavailability(String[] args) throws Exception {
         Scanner scan=new Scanner(System.in);
