@@ -474,7 +474,7 @@ public class App{
             stm8.setString(1,username);
             ResultSet rese=stm8.executeQuery();
             rese.next();
-            String user_id=rese.getString(1);
+            String user_id=rese.getString("username");
 
             PreparedStatement stm9 = connection.prepareStatement("SELECT * FROM event WHERE user_id=?");
             stm9.setString(1,user_id);
