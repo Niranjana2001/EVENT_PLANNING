@@ -27,11 +27,11 @@ public class App{
             if(adv_ref!=null){
                 caterer_id=caterer(username);
                 decoration_id=decoration(username);
-                eventStatus(username);
                 System.out.println("Please give the reference number of the final payment : ");
                 final_ref=sc.nextLine();
                 eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref);  
-                
+                eventStatus(username);
+                cancellation(username);
             }else{
                 System.out.println("We cannot proceed further without advance payment");
             }
@@ -53,11 +53,11 @@ public class App{
                 if(adv_ref!=null){
                     caterer_id=caterer(username);
                     decoration_id=decoration(username);
-                    eventStatus(username);
                     System.out.println("Please give the reference number of the final payment : ");
                     final_ref=sc.nextLine();
                     eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref);  
-                    
+                    eventStatus(username);
+                    cancellation(username);
                 }else{
                     System.out.println("We cannot proceed further without advance payment");
                 }
@@ -227,7 +227,6 @@ public class App{
     
     static String dateavailability(String username) {
         Scanner sc=new Scanner(System.in);
-        System.out.println("Hello, World!");
         System.out.println("Enter the date of the event in the format yyyy-mm-dd");
         String eventdate=sc.nextLine();
         String datenotavailable=null;
@@ -411,8 +410,6 @@ public class App{
             PreparedStatement stm3 = connection.prepareStatement("SELECT DISTINCT enterprise_name,rate FROM decoration WHERE location=?");
             stm3.setString(1,usercity);
             ResultSet res1=stm3.executeQuery();
-            System.out.println(usercity);
-
             while(res1.next()){
                 ResultSetMetaData metadata=res1.getMetaData();
                 int column=metadata.getColumnCount();
@@ -459,41 +456,41 @@ public class App{
             System.out.println("How many guests are you expecting : ");
             int guest=Integer.parseInt(sc.nextLine());
             prep5.setInt(3,guest);
-            prep5.setInt(5,location_id);
-            prep5.setInt(6,caterer_id);
-            prep5.setInt(7,decoration_id);
-            prep5.setString(8,adv_ref);
-            prep5.setString(9,final_ref);
             PreparedStatement prep6=connection.prepareStatement("SELECT user_id FROM user WHERE username=?");
             prep6.setString(1,username);
             ResultSet rset6=prep6.executeQuery();
             rset6.next();
             int user_id=rset6.getInt(1);
             prep5.setInt(4,user_id);
+            prep5.setInt(5,location_id);
+            prep5.setInt(6,caterer_id);
+            prep5.setInt(7,decoration_id);
+            prep5.setString(8,adv_ref);
+            prep5.setString(9,final_ref);
             prep5.executeUpdate();
+            
 
             
             
         } catch (Exception e) {
             System.out.println(e);
         }
-        
-
     }
+
+    
     static void eventStatus(String username){
         try{
             Scanner sc=new Scanner(System.in);
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
             PreparedStatement stm8=connection.prepareStatement("SELECT user_id FROM user WHERE username=?");
-            // String Username=res.getString("username");
             stm8.setString(1,username);
             ResultSet rese=stm8.executeQuery();
             rese.next();
-            String user_id=rese.getString("username");
+            int user_id=rese.getInt("user_id");
 
             PreparedStatement stm9 = connection.prepareStatement("SELECT * FROM event WHERE user_id=?");
-            stm9.setString(1,user_id);
+            stm9.setInt(1,user_id);
             ResultSet res12=stm9.executeQuery();
             if(res12.next()){
                 // displaying event details
@@ -506,7 +503,7 @@ public class App{
                 ResultSet res13=stm10.executeQuery();
                 if (res13.next()) {
                     String locationName = res13.getString("location_name");
-                    System.out.println(" EVENT LOCATION : " + locationName);
+                    System.out.println("EVENT LOCATION : " + locationName);
                 }
 
                 }
@@ -525,7 +522,14 @@ public class App{
                  }
                  if(catererBooked==true){
                     System.out.println("The caterer has been booked");
-                    // System.out.println("The caterer is : "+)
+                    PreparedStatement pres1=connection.prepareStatement("SELECT enterprise_name FROM caterer WHERE caterer_id=?");
+                    pres1.setInt(1,caterer_id);
+                    ResultSet rest4=pres1.executeQuery();
+                    if(rest4.next()){
+                        String caterername=rest4.getString("enterprise_name");
+                        System.out.println("The caterer is : "+caterername);
+                    }
+                    
                     
                  }else{
                     System.out.println("The caterer booking is pending");
@@ -546,30 +550,46 @@ public class App{
                   }
                   if(decorBooked==true){
                      System.out.println("The decor has been booked");
-                    //  System.out.println("The decoration team booked is : "+)
-                     
+                     PreparedStatement pres2=connection.prepareStatement("SELECT enterprise_name FROM decoration WHERE decoration_id=?");
+                    pres2.setInt(1,decoration_id);
+                    ResultSet rest5=pres2.executeQuery();
+                    if(rest5.next()){
+                        String decteamname=rest5.getString("enterprise_name");
+                        System.out.println("The decoration team is : "+decteamname);
+                    }
                   }else{
                      System.out.println("The decor booking is pending");
                   }
                 
                 PreparedStatement stmt2=connection.prepareStatement("SELECT user.username, event.adv_ref FROM user INNER JOIN event ON user.user_id = event.user_id WHERE user.user_id = ?");
-                stmt2.setString(1, user_id);
+                stmt2.setInt(1, user_id);
                 ResultSet rs16=stmt2.executeQuery();
                 if(rs16.next()){
                     System.out.println("The advance payment completed");
-                    // System.out.println("The reference number is "+)
+                    PreparedStatement pres3=connection.prepareStatement("SELECT adv_ref FROM event WHERE event_id=?");
+                    pres3.setInt(1,res12.getInt("event_id"));
+                    ResultSet rest6=pres3.executeQuery();
+                    if(rest6.next()){
+                        String advance=rest6.getString("adv_ref");
+                        System.out.println("The reference for advance payment is : "+advance);
+                    }
 
                 }else{
                     System.out.println("Adavance payment is pending...");
                 }
                 
                 PreparedStatement stmt3=connection.prepareStatement("SELECT user.username, event.final_ref FROM user INNER JOIN event ON user.user_id = event.user_id WHERE user.user_id = ?");
-                stmt3.setString(1, user_id);
+                stmt3.setInt(1, user_id);
                 ResultSet rs17=stmt3.executeQuery();
                 if(rs17.next()){
                     System.out.println("Final payment is completed!!");
-                    // System.out.println("The reference number is "+)
-
+                    PreparedStatement pres4=connection.prepareStatement("SELECT final_ref FROM event WHERE event_id=?");
+                    pres4.setInt(1,res12.getInt("event_id"));
+                    ResultSet rest7=pres4.executeQuery();
+                    if(rest7.next()){
+                        String finalpayment=rest7.getString("final_ref");
+                        System.out.println("The reference for final payment is : "+finalpayment);
+                    }
                 }
                 
                 else{
@@ -585,6 +605,39 @@ public class App{
         }
         
 
+    }
+    static void cancellation(String username){
+        Scanner sc =new Scanner(System.in);
+        System.out.println("Press 5 if you wish to cancel the event \nPlease note that upon cancellation only 75% of the payment will be refund to the account number given when the registration was done.");
+        int cancel=Integer.parseInt(sc.nextLine());
+        if(cancel==5){
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+                PreparedStatement pstmt=connection.prepareStatement("SELECT user_id FROM user WHERE username=?");
+                pstmt.setString(1,username);
+                ResultSet rest=pstmt.executeQuery();
+                rest.next();
+                int user_id=rest.getInt("user_id");
+                PreparedStatement pstmt1=connection.prepareStatement("SELECT event_id FROM event WHERE user_id=?");
+                pstmt1.setInt(1,user_id);
+                ResultSet rest1=pstmt1.executeQuery();
+                rest1.next();
+                int event_id=rest1.getInt("event_id");
+                PreparedStatement pstmt2=connection.prepareStatement("DELETE FROM event WHERE user_id=? AND event_id=?");
+                pstmt2.setInt(1,user_id);
+                pstmt2.setInt(2,event_id);
+                // ResultSet rest2=pstmt2.executeUpdate();
+                int rowsDeleted = pstmt2.executeUpdate();
+                System.out.println("The refund process has begun.It will be completed in 5 business days.");
+                // rest2.next();
+
+            }catch(Exception e){
+                System.out.println(e);
+            } 
+        }else{
+            System.out.println("Thank you for continuing to avail our service.");
+        }
     }
     
 }
