@@ -29,6 +29,7 @@ public class App{
                 System.out.println("Please give the reference number of the final payment : ");
                 final_ref=sc.nextLine();
                 eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref);  
+                eventStatus(username);
             }else{
                 System.out.println("We cannot proceed further without advance payment");
             }
@@ -48,6 +49,7 @@ public class App{
                     System.out.println("Please give the reference number of the final payment : ");
                     final_ref=sc.nextLine();
                     eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref); 
+                    eventStatus(username);
                 }else{
                     System.out.println("We cannot proceed further without advance payment");
                 }
@@ -306,6 +308,7 @@ public class App{
             String usercity=rs3.getString(1);
             switch(b){
                 case 1:
+                System.out.println("The following are the caterers available on the date given : ");
                 PreparedStatement prepstatement4 = connection.prepareStatement("SELECT DISTINCT enterprise_name,rate_per_head FROM caterer WHERE veg=1 AND location=?");
                 prepstatement4.setString(1,usercity);
                 ResultSet rs4=prepstatement4.executeQuery();
@@ -326,6 +329,7 @@ public class App{
                 caterer_id=rset2.getInt(1);
                 break;
                 case 2:
+                System.out.println("The following are the caterers available on the date given : ");
                 PreparedStatement prepstatement5 = connection.prepareStatement("SELECT DISTINCT enterprise_name,rate_per_head FROM caterer WHERE non_veg=1 AND location=?");
                 prepstatement5.setString(1,usercity);
                 ResultSet rs5=prepstatement5.executeQuery();
@@ -346,6 +350,7 @@ public class App{
                 caterer_id=rset8.getInt(1);
                 break;
                 case 3:
+                System.out.println("The following are the caterers available on the date given : ");
                 PreparedStatement prepstatement6 = connection.prepareStatement("SELECT DISTINCT enterprise_name,rate_per_head FROM caterer WHERE veg=1 AND non_veg=0 AND location=?");
                 prepstatement6.setString(1,usercity);
                 ResultSet rs6=prepstatement6.executeQuery();
@@ -386,6 +391,7 @@ public class App{
             ResultSet res=stm2.executeQuery();
             res.next();
             String usercity=res.getString(1);
+            System.out.println("The following are the decoration teams available on the date given : ");
             PreparedStatement stm3 = connection.prepareStatement("SELECT DISTINCT enterprise_name,rate FROM decoration WHERE location=?");
             stm3.setString(1,usercity);
             ResultSet res1=stm3.executeQuery();
@@ -458,14 +464,14 @@ public class App{
         
 
     }
-    static void eventStatus(){
+    static void eventStatus(String username){
         try{
             Scanner sc=new Scanner(System.in);
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
             PreparedStatement stm8=connection.prepareStatement("SELECT user_id FROM user WHERE username=?");
             // String Username=res.getString("username");
-            stm8.setString(1,"Username");
+            stm8.setString(1,username);
             ResultSet rese=stm8.executeQuery();
             rese.next();
             String user_id=rese.getString(1);
