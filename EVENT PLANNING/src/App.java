@@ -345,6 +345,123 @@ public class App{
         }
         return preferred_decteam;
     }
+    static void eventStatus(){
+        try{
+            Scanner sc=new Scanner(System.in);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+            PreparedStatement stm8=connection.prepareStatement("SELECT user_id FROM user WHERE username=?");
+            // String Username=res.getString("username");
+            stm8.setString(1,"Username");
+            ResultSet rese=stm8.executeQuery();
+            rese.next();
+            String user_id=rese.getString(1);
+
+            PreparedStatement stm9 = connection.prepareStatement("SELECT * FROM event WHERE user_id=?");
+            stm9.setString(1,user_id);
+            ResultSet res12=stm9.executeQuery();
+            if(res12.next()){
+                // displaying event details
+                System.out.println("EVENT ID: "+res12.getInt("event_id"));
+                System.out.println("EVENT NAME: "+res12.getString("event_name"));
+                System.out.println("EVENT DATE: "+res12.getString("event_date"));
+                PreparedStatement stm10=connection.prepareStatement("SELECT location_name FROM location WHERE location_id=?");
+                int locationId = res12.getInt("location_id");
+                 stm10.setString(1, String.valueOf(locationId));
+                
+                ResultSet res13=stm10.executeQuery();
+                if (res13.next()) {
+                    String locationName = res13.getString("location_name");
+                    System.out.println(" EVENT LOCATION : " + locationName);
+                }
+
+                }
+                // /check if the caterer has been booked
+                boolean catererBooked=false;
+                PreparedStatement stmt=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE caterer_id=? AND event_id=?");
+                
+                 stmt.setString(1,"catererId");
+                 stmt.setString(2,"eventId");
+                 ResultSet rs14=stmt.executeQuery();
+                 if(rs14.next()){
+                    int count=rs14.getInt(1);
+                    if(count>0){
+                        catererBooked=true;
+                    }
+                 }
+                 if(catererBooked){
+                    System.out.println("The caterer has been booked");
+                    
+                 }else{
+                    System.out.println("the caterer booking is pending");
+                 }
+
+
+                 boolean decorBooked=false;
+                 PreparedStatement stmt1=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE decoration_id=? AND event_id=?");
+                  stmt1.setString(1,"decorationId");
+                  stmt1.setString(2,"eventId");
+                  ResultSet rs15=stmt1.executeQuery();
+                  if(rs15.next()){
+                     int count=rs15.getInt(1);
+                     if(count>0){
+                         decorBooked=true;
+                     }
+                  }
+                  if(decorBooked){
+                     System.out.println("The decor has been booked");
+                     
+                  }else{
+                     System.out.println("The decor booking is pending");
+                  }
+                //   Checking payment status
+                boolean advancePaid=false;
+                boolean finalPaid=false;
+                String advRef = res12.getString("adv_ref");
+                PreparedStatement stmt2=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE adv_ref=?");
+                stmt2.setString(1, advRef);
+                ResultSet rs16=stmt2.executeQuery();
+                if(rs16.next()){
+                    int count=rs16.getInt("adv_ref");
+                    if(count>0){
+                        advancePaid=true;
+
+                    }
+
+                }
+                if(advancePaid){
+                    System.out.println("Advance Payment is completed!!");
+
+                }else{
+                    System.out.println("Adavance payment is pending...");
+                }
+                String finalRef = res12.getString("final_ref");
+                PreparedStatement stmt3=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE final_ref=?");
+                     stmt3.setString(1, finalRef);
+                ResultSet rs17=stmt3.executeQuery();
+                if(rs17.next()){
+                    int count=rs17.getInt("final_ref");
+                    if(count>0){
+                        finalPaid=true;
+                    }
+                }
+                if(finalPaid){
+                    System.out.println("Final payment is completed!!");
+
+                }else{
+                    System.out.println("Final Payment is pending....");
+                }
+
+
+
+
+
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        
+
+    }
     
 }
 
