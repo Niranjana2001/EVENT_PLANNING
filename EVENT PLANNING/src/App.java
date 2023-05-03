@@ -20,39 +20,52 @@ public class App{
         if(a==1){
             username=userregistration();
             eventdate=dateavailability(username);
-            location_id=locationbooking(username);
+            if(!eventdate.equals(null)){
+                location_id=locationbooking(username);
             System.out.println("Please give the reference number of the advance payment(location rate) to proceed further : ");
             adv_ref=sc.nextLine();
             if(adv_ref!=null){
                 caterer_id=caterer(username);
                 decoration_id=decoration(username);
+                eventStatus(username);
                 System.out.println("Please give the reference number of the final payment : ");
                 final_ref=sc.nextLine();
                 eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref);  
-                eventStatus(username);
+                
             }else{
                 System.out.println("We cannot proceed further without advance payment");
             }
             
-        }else if(a==2){
+            }else{
+                System.out.println("Sorry for the inconvenience.The date is not available");
+            }
+        }
+        else if(a==2){
             username=userLogin();
             if(username==null){
                 System.out.println("Password incorrect.Please try again");
             }else{
                 eventdate=dateavailability(username);
-                location_id=locationbooking(username);
+                if(!eventdate.equals(null)){
+                    location_id=locationbooking(username);
                 System.out.println("Please give the reference number of the advance payment(location rate) to proceed further : ");
                 adv_ref=sc.nextLine();
                 if(adv_ref!=null){
                     caterer_id=caterer(username);
                     decoration_id=decoration(username);
+                    eventStatus(username);
                     System.out.println("Please give the reference number of the final payment : ");
                     final_ref=sc.nextLine();
-                    eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref); 
-                    eventStatus(username);
+                    eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref);  
+                    
                 }else{
                     System.out.println("We cannot proceed further without advance payment");
                 }
+                
+                }else{
+                    System.out.println("Sorry for the inconvenience.The date is not available");
+                }
+                
                     
                 }
                 
@@ -217,6 +230,7 @@ public class App{
         System.out.println("Hello, World!");
         System.out.println("Enter the date of the event in the format yyyy-mm-dd");
         String eventdate=sc.nextLine();
+        String datenotavailable=null;
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
@@ -237,7 +251,9 @@ public class App{
             if(count>0){
                 System.out.println("Event date not available");
                 System.out.println("Sorry for the inconvenience");
+            
             }else{
+                datenotavailable=eventdate;
                 locationbooking(username);
             }
 
@@ -252,7 +268,7 @@ public class App{
         catch(Exception e){
             System.out.println(e);
         }
-        return eventdate;
+        return datenotavailable;
     }
 
     static int locationbooking(String username){
@@ -484,10 +500,9 @@ public class App{
                 System.out.println("EVENT ID: "+res12.getInt("event_id"));
                 System.out.println("EVENT NAME: "+res12.getString("event_name"));
                 System.out.println("EVENT DATE: "+res12.getString("event_date"));
-                PreparedStatement stm10=connection.prepareStatement("SELECT location_name FROM location WHERE location_id=?");
+                PreparedStatement stm10=connection.prepareStatement("SELECT location_name FROM location WHERE location_id=?"); 
                 int locationId = res12.getInt("location_id");
-                 stm10.setString(1, String.valueOf(locationId));
-                
+                stm10.setInt(1, locationId);
                 ResultSet res13=stm10.executeQuery();
                 if (res13.next()) {
                     String locationName = res13.getString("location_name");
@@ -497,77 +512,67 @@ public class App{
                 }
                 // /check if the caterer has been booked
                 boolean catererBooked=false;
-                PreparedStatement stmt=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE caterer_id=? AND event_id=?");
-                
-                 stmt.setString(1,"catererId");
-                 stmt.setString(2,"eventId");
-                 ResultSet rs14=stmt.executeQuery();
+                PreparedStatement stmt11=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE caterer_id=? AND event_id=?");
+                int caterer_id = res12.getInt("caterer_id");
+                stmt11.setInt(1, caterer_id);
+                stmt11.setInt(2,res12.getInt("event_id"));
+                 ResultSet rs14=stmt11.executeQuery();
                  if(rs14.next()){
                     int count=rs14.getInt(1);
                     if(count>0){
                         catererBooked=true;
                     }
                  }
-                 if(catererBooked){
+                 if(catererBooked==true){
                     System.out.println("The caterer has been booked");
+                    // System.out.println("The caterer is : "+)
                     
                  }else{
-                    System.out.println("the caterer booking is pending");
+                    System.out.println("The caterer booking is pending");
                  }
 
 
                  boolean decorBooked=false;
-                 PreparedStatement stmt1=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE decoration_id=? AND event_id=?");
-                  stmt1.setString(1,"decorationId");
-                  stmt1.setString(2,"eventId");
-                  ResultSet rs15=stmt1.executeQuery();
+                 PreparedStatement stmt12=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE decoration_id=? AND event_id=?");
+                 int decoration_id = res12.getInt("decoration_id");
+                stmt12.setInt(1, decoration_id);
+                stmt12.setInt(2,res12.getInt("event_id"));
+                  ResultSet rs15=stmt12.executeQuery();
                   if(rs15.next()){
                      int count=rs15.getInt(1);
                      if(count>0){
                          decorBooked=true;
                      }
                   }
-                  if(decorBooked){
+                  if(decorBooked==true){
                      System.out.println("The decor has been booked");
+                    //  System.out.println("The decoration team booked is : "+)
                      
                   }else{
                      System.out.println("The decor booking is pending");
                   }
-                //   Checking payment status
-                boolean advancePaid=false;
-                boolean finalPaid=false;
-                String advRef = res12.getString("adv_ref");
-                PreparedStatement stmt2=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE adv_ref=?");
-                stmt2.setString(1, advRef);
+                
+                PreparedStatement stmt2=connection.prepareStatement("SELECT user.username, event.adv_ref FROM user INNER JOIN event ON user.user_id = event.user_id WHERE user.user_id = ?");
+                stmt2.setString(1, user_id);
                 ResultSet rs16=stmt2.executeQuery();
                 if(rs16.next()){
-                    int count=rs16.getInt("adv_ref");
-                    if(count>0){
-                        advancePaid=true;
-
-                    }
-
-                }
-                if(advancePaid){
-                    System.out.println("Advance Payment is completed!!");
+                    System.out.println("The advance payment completed");
+                    // System.out.println("The reference number is "+)
 
                 }else{
                     System.out.println("Adavance payment is pending...");
                 }
-                String finalRef = res12.getString("final_ref");
-                PreparedStatement stmt3=connection.prepareStatement("SELECT COUNT(*) FROM event WHERE final_ref=?");
-                     stmt3.setString(1, finalRef);
+                
+                PreparedStatement stmt3=connection.prepareStatement("SELECT user.username, event.final_ref FROM user INNER JOIN event ON user.user_id = event.user_id WHERE user.user_id = ?");
+                stmt3.setString(1, user_id);
                 ResultSet rs17=stmt3.executeQuery();
                 if(rs17.next()){
-                    int count=rs17.getInt("final_ref");
-                    if(count>0){
-                        finalPaid=true;
-                    }
-                }
-                if(finalPaid){
                     System.out.println("Final payment is completed!!");
+                    // System.out.println("The reference number is "+)
 
-                }else{
+                }
+                
+                else{
                     System.out.println("Final Payment is pending....");
                 }
 
