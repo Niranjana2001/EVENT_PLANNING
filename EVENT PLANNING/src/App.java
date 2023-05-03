@@ -56,27 +56,18 @@ public class App{
                     eventStatus(username);
                     System.out.println("Please give the reference number of the final payment : ");
                     final_ref=sc.nextLine();
-                    eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref);  
-                    
+                    eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref);      
                 }else{
                     System.out.println("We cannot proceed further without advance payment");
                 }
-                
                 }else{
                     System.out.println("Sorry for the inconvenience.The date is not available");
-                }
-                
-                    
-                }
-                
+                }           
+                }        
         }
         else{
             System.out.println("Give valid number");
         }
-        
-
-
-
     }
     static String userregistration()  {
         String username=null;
@@ -94,8 +85,6 @@ public class App{
             Statement statement = connection.createStatement();
             String sql = "SELECT * FROM user WHERE username='" + username + "'";
             ResultSet resultSet = statement.executeQuery(sql);
-        
-
         if(resultSet.next()) {
             System.out.println("Username already exists!!!");
             System.out.println("Enter another username:  ");
@@ -122,8 +111,6 @@ public class App{
              sql = "INSERT INTO user (username, password,name,address,city,email,phone_number,adhaar_number,account_number) VALUES ('" + userDetails[0] + "', '" + userDetails[1] + "' ,'"+ userDetails[2] +"','"+ userDetails[3] +"','"+ userDetails[4] +"','"+ userDetails[5] +"','"+ userDetails[6] +"','"+ userDetails[7] +"','"+ userDetails[8] +"')";
            statement.executeUpdate(sql);
            System.out.println("Success");
-
-
         }else{
             System.out.println("Enter password:");
             String password=sc.nextLine();
@@ -204,10 +191,8 @@ public class App{
         if(passwordcorrect==true){
             return username;
         }
-        return usernamedupe;
-       
+        return usernamedupe;  
     }
-
     static boolean passwordverification(String password1,String password){
         boolean passwordcorrect=false;
         boolean passwordverified=true;
@@ -224,7 +209,6 @@ public class App{
         }
         return passwordverified;  
     }
-    
     static String dateavailability(String username) {
         Scanner sc=new Scanner(System.in);
         System.out.println("Hello, World!");
@@ -239,15 +223,6 @@ public class App{
             ResultSet rs=prepstatement.executeQuery();
             rs.next();
             int count=rs.getInt(1);
-            
-            
-            
-            
-            // while (resultSet.next()) {
-            //     ResultSetMetaData metaData = resultSet.getMetaData();
-            //     int columnCount = metaData.getColumnCount();
-
-            // }
             if(count>0){
                 System.out.println("Event date not available");
                 System.out.println("Sorry for the inconvenience");
@@ -256,13 +231,6 @@ public class App{
                 datenotavailable=eventdate;
                 locationbooking(username);
             }
-
-            // Statement statement=connection.createStatement();
-            // String sql = "INSERT INTO event (username, password,name,address,city,email,phone_number,adhaar_number,account_number) VALUES ('" + userDetails[0] + "', '" + userDetails[1] + "' ,'"+ userDetails[2] +"','"+ userDetails[3] +"','"+ userDetails[4] +"','"+ userDetails[5] +"','"+ userDetails[6] +"','"+ userDetails[7] +"','"+ userDetails[8] +"')";
-            // statement.executeUpdate(sql);
-            
-                      
-
         }
         
         catch(Exception e){
@@ -470,15 +438,10 @@ public class App{
             rset6.next();
             int user_id=rset6.getInt(1);
             prep5.setInt(4,user_id);
-            prep5.executeUpdate();
-
-            
-            
+            prep5.executeUpdate();    
         } catch (Exception e) {
             System.out.println(e);
         }
-        
-
     }
     static void eventStatus(String username){
         try{
@@ -562,7 +525,6 @@ public class App{
                 }else{
                     System.out.println("Adavance payment is pending...");
                 }
-                
                 PreparedStatement stmt3=connection.prepareStatement("SELECT user.username, event.final_ref FROM user INNER JOIN event ON user.user_id = event.user_id WHERE user.user_id = ?");
                 stmt3.setString(1, user_id);
                 ResultSet rs17=stmt3.executeQuery();
@@ -571,22 +533,13 @@ public class App{
                     // System.out.println("The reference number is "+)
 
                 }
-                
                 else{
                     System.out.println("Final Payment is pending....");
                 }
-
-
-
-
-
         }catch(Exception e){
             System.out.println(e);
         }
-        
-
     }
-    
 }
 
 
