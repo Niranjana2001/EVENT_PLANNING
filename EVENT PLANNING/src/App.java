@@ -1,14 +1,16 @@
 import java.sql.*;
 
 import java.util.*;
+import java.io.*;
 
 import com.mysql.cj.log.NullLogger;
 
 public class App{
     public static void main(String[] args){
         Scanner sc=new Scanner(System.in);
-        System.out.println("Hello");
-        System.out.println("Do you want to register or login (Register : 1,Login : 2) : ");
+        System.out.println("\u001B[31mHello\u001B[0m");
+        System.out.println("\u001B[31mDo you want to register or login (Register : 1,Login : 2) : \u001B[0m");
+        // System.out.println("Do you want to register or login (Register : 1,Login : 2) : ");
         int a =Integer.parseInt(sc.nextLine());
         String username;
         String eventdate;
@@ -22,33 +24,41 @@ public class App{
             eventdate=dateavailability(username);
             if(!eventdate.equals(null)){
                 location_id=locationbooking(username);
-            System.out.println("Please give the reference number of the advance payment(location rate) to proceed further : ");
+             System.out.println("\033[34mPlease give the reference number of the advance payment(location rate) to proceed further : \033[0m");
+            // System.out.println("Please give the reference number of the advance payment(location rate) to proceed further : ");
             adv_ref=sc.nextLine();
             if(adv_ref!=null){
                 caterer_id=caterer(username);
                 decoration_id=decoration(username);
-                System.out.println("Please give the reference number of the final payment : ");
+                System.out.println("\u001B[34mPlease give the reference number of the final payment : \u001B[0m");
+                // System.out.println("Please give the reference number of the final payment : ");
                 final_ref=sc.nextLine();
                 eventtableupdates(username, eventdate, location_id, caterer_id, decoration_id, adv_ref, final_ref);  
                 eventStatus(username);
                 cancellation(username);
             }else{
-                System.out.println("We cannot proceed further without advance payment");
+                System.out.println("\u001B[34mWe cannot proceed further without advance payment\u001B[0m"); 
+                // System.out.println("We cannot proceed further without advance payment");
             }
             
             }else{
-                System.out.println("Sorry for the inconvenience.The date is not available");
+                System.out.println("\u001B[31mSorry for the inconvenience. The date is not available\u001B[0m");
+                // System.out.println("Sorry for the inconvenience.The date is not available");
             }
         }
         else if(a==2){
             username=userLogin();
             if(username==null){
-                System.out.println("Password incorrect.Please try again");
+                // System.out.println("Password incorrect.Please try again");
+                System.out.println("\u001B[31mPassword incorrect. Please try again\u001B[0m");
+
             }else{
                 eventdate=dateavailability(username);
                 if(!eventdate.equals(null)){
                     location_id=locationbooking(username);
-                System.out.println("Please give the reference number of the advance payment(location rate) to proceed further : ");
+                // System.out.println("Please give the reference number of the advance payment(location rate) to proceed further : ");
+                System.out.println("\033[32mPlease give the reference number of the advance payment(location rate) to proceed further : \033[0m");
+
                 adv_ref=sc.nextLine();
                 if(adv_ref!=null){
                     caterer_id=caterer(username);
@@ -73,9 +83,6 @@ public class App{
         else{
             System.out.println("Give valid number");
         }
-        
-
-
 
     }
     static String userregistration()  {
