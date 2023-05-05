@@ -23,7 +23,10 @@
 #### Decoration function
 ###### This is a method that takes in a username as input and returns an integer value representing the decoration team selected by the user. The method connects to a MySQL database, retrieves the user's city from the database, and then displays the available decoration teams for that city. The user is prompted to select a preferred decoration team, and the method returns the decoration ID of the selected team from the database.
 
-#### The eventStatus method takes three arguments: the username of the user who created the event, the filename of a file to write the output to, and a boolean value called cancellation.
+#### Event Status Function
+###### The eventStatus method takes three arguments: the username of the user who created the event, the filename of a file to write the output to, and a boolean value called cancellation.
+
+#### Cancellation function
 ###### This is a Java method named cancellation that takes a string parameter username. The purpose of this method is to allow a user to cancel an event they have registered for. If the user chooses to cancel, the method will delete the corresponding event record from a MySQL database, and initiate a refund of 75% of the payment to the user's account number. The method returns a boolean value of true if the cancellation is successful, and false if the user chooses not to cancel. 
 
 
