@@ -26,4 +26,12 @@ Date of Event : 2023-02-02
 Location of the Event : Taj Mahal Palace
 Caterer for the Event : The Spice Kitchen
 Decoration team for the event : Mehndi Decorators
-The evenet has been cancelled
+The evenet has been cancelled[34mDETAILS OF THE EVENT BOOKED BY Dimna12333
+[0m[34mEvent ID : 10
+[0m[34mType of Event : Wedding
+[0m[34mDate of Event : 2023-03-03
+[0m[34mLocation of the Event : Taj Mahal Palace
+[0m[34mCaterer for the Event : The Gourmet Affair
+[0m[34mDecoration team for the event : Ferns N Petals
+[0m[31mThe event has been cancelled 
+[0m
