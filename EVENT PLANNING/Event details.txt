@@ -19,4 +19,11 @@ Date of Event : 2023-01-01
 Location of the Event : Taj Mahal Palace
 Caterer for the Event : The Spice Kitchen
 Decoration team for the event : Ferns N Petals
+The evenet has been cancelledDETAILS OF THE EVENT BOOKED BY Niranjana1234
+Event ID : 18
+Type of Event : Wedding
+Date of Event : 2023-02-02
+Location of the Event : Taj Mahal Palace
+Caterer for the Event : The Spice Kitchen
+Decoration team for the event : Mehndi Decorators
 The evenet has been cancelled
