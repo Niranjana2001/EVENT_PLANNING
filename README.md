@@ -22,3 +22,183 @@
 
 
 
+#### SQL QUERY USEWD FOR CREATING DATABASE:
+CREATE DATABASE event_planning;
+USE event_planning;
+
+
+
+User table
+CREATE TABLE user (
+  user_id INT NOT NULL AUTO_INCREMENT,
+  username VARCHAR(50) NOT NULL,
+  password VARCHAR(50) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  address VARCHAR(200),
+  city VARCHAR(50),
+  email VARCHAR(100),
+  phone_number VARCHAR(20),
+  adhaar_number VARCHAR(20),
+  account_number VARCHAR(20),
+  PRIMARY KEY (user_id)
+);
+
+
+
+ desc user;
++----------------+--------------+------+-----+---------+----------------+
+| Field          | Type         | Null | Key | Default | Extra          |
++----------------+--------------+------+-----+---------+----------------+
+| user_id        | int          | NO   | PRI | NULL    | auto_increment |
+| username       | varchar(50)  | NO   |     | NULL    |                |
+| password       | varchar(50)  | NO   |     | NULL    |                |
+| name           | varchar(100) | NO   |     | NULL    |                |
+| address        | varchar(200) | YES  |     | NULL    |                |
+| city           | varchar(50)  | YES  |     | NULL    |                |
+| email          | varchar(100) | YES  |     | NULL    |                |
+| phone_number   | varchar(20)  | YES  |     | NULL    |                |
+| adhaar_number  | varchar(20)  | YES  |     | NULL    |                |
+| account_number | varchar(20)  | YES  |     | NULL    |                |
++----------------+--------------+------+-----+---------+----------------+
+
+
+Event table
+CREATE TABLE event (
+  event_id int NOT NULL AUTO_INCREMENT,
+  event_name varchar(255),
+  event_date date,
+  guest_number int,
+  user_id int,
+  location_id int,
+  caterer_id int,
+  decoration_id int,
+  adv_ref varchar(50),
+  final_ref varchar(50),
+  PRIMARY KEY (event_id),
+  FOREIGN KEY (user_id) REFERENCES user(user_id),
+  FOREIGN KEY (location_id) REFERENCES location(location_id),
+  FOREIGN KEY (caterer_id) REFERENCES caterer(caterer_id),
+  FOREIGN KEY (decoration_id) REFERENCES decoration(decoration_id)
+);
+
+
+ desc event;
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| event_id      | int          | NO   | PRI | NULL    | auto_increment |
+| event_name    | varchar(255) | YES  |     | NULL    |                |
+| event_date    | date         | YES  |     | NULL    |                |
+| guest_number  | int          | YES  |     | NULL    |                |
+| user_id       | int          | YES  | MUL | NULL    |                |
+| location_id   | int          | YES  | MUL | NULL    |                |
+| caterer_id    | int          | YES  | MUL | NULL    |                |
+| decoration_id | int          | YES  | MUL | NULL    |                |
+| adv_ref       | varchar(50)  | YES  |     | NULL    |                |
+| final_ref     | varchar(50)  | YES  |     | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
+
+
+Location table
+CREATE TABLE location (
+  location_id int NOT NULL PRIMARY KEY,
+  location_name varchar(50) NOT NULL,
+  address varchar(100) NOT NULL,
+  city varchar(50) NOT NULL,
+  rate int NOT NULL,
+  phone_number varchar(20) NOT NULL,
+  guest_availability int NOT NULL,
+  license_number varchar(20) NOT NULL,
+  email varchar(50) NOT NULL
+);
+
+ desc location;
++--------------------+--------------+------+-----+---------+-------+
+| Field              | Type         | Null | Key | Default | Extra |
++--------------------+--------------+------+-----+---------+-------+
+| location_id        | int          | NO   | PRI | NULL    |       |
+| location_name      | varchar(50)  | NO   |     | NULL    |       |
+| address            | varchar(100) | NO   |     | NULL    |       |
+| city               | varchar(50)  | NO   |     | NULL    |       |
+| rate               | int          | NO   |     | NULL    |       |
+| phone_number       | varchar(20)  | NO   |     | NULL    |       |
+| guest_availability | int          | NO   |     | NULL    |       |
+| license_number     | varchar(20)  | NO   |     | NULL    |       |
+| email              | varchar(50)  | NO   |     | NULL    |       |
++--------------------+--------------+------+-----+---------+-------+
+
+
+
+
+Decoration table:
+CREATE TABLE decoration (
+  decoration_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  enterprise_name VARCHAR(255),
+  location VARCHAR(255),
+  rate INT,
+  phone_number VARCHAR(20),
+  license_number VARCHAR(20),
+  email VARCHAR(255)
+);
+
+
+
+ desc decoration;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| decoration_id   | int          | NO   | PRI | NULL    |       |
+| enterprise_name | varchar(255) | YES  |     | NULL    |       |
+| location        | varchar(255) | YES  |     | NULL    |       |
+| rate            | int          | YES  |     | NULL    |       |
+| phone_number    | varchar(20)  | YES  |     | NULL    |       |
+| license_number  | varchar(20)  | YES  |     | NULL    |       |
+| email           | varchar(255) | YES  |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+
+
+Caterer table
+CREATE TABLE caterer (
+  caterer_id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  enterprise_name varchar(255),
+  location varchar(255),
+  rate_per_head int,
+  phone_number varchar(20),
+  license_number varchar(255),
+  veg tinyint(1),
+  non_veg tinyint(1),
+  email varchar(255)
+);
+
+ desc caterer;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| caterer_id      | int          | NO   | PRI | NULL    |       |
+| enterprise_name | varchar(255) | YES  |     | NULL    |       |
+| location        | varchar(255) | YES  |     | NULL    |       |
+| rate_per_head   | int          | YES  |     | NULL    |       |
+| phone_number    | varchar(20)  | YES  |     | NULL    |       |
+| license_number  | varchar(255) | YES  |     | NULL    |       |
+| veg             | tinyint(1)   | YES  |     | NULL    |       |
+| non_veg         | tinyint(1)   | YES  |     | NULL    |       |
+| email           | varchar(255) | YES  |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
