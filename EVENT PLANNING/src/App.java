@@ -32,7 +32,7 @@ public class App{
         String eventtype=eventtype(option);
         System.out.println("\033[30mEnter the number of guests you are expecting :\033[0m ");
         int guest=Integer.parseInt(sc.nextLine());
-        System.out.println("\033[34m1.Date Availability \n2. Location Booking \n3.Caterer Booking \n4.Decoration team Booking \n5.Event Status \n6.Cancellation \nChoose an option\033[0m");
+        System.out.println("\033[34m1.Date Availability \n2. Location Booking \n3.Caterer Booking \n4.Decoration team Booking \n5.Event Status \n6.Cancellation \n7.Most booked locations \nChoose an option\033[0m");
         int choice=Integer.parseInt(sc.nextLine());
         String eventdate="";
         int location_id=0;
@@ -81,9 +81,12 @@ public class App{
             // call cancellation function
             cancellation=cancellation(username);
             break;
-            default:
-            System.out.println("\033[36mEnter a valid choice\033[0m");
-            break;
+            case 7:
+            // Call analysis function
+            analysis(username);
+            // default:
+            // System.out.println("\033[36mEnter a valid choice\033[0m");
+            // break;
         }
 
 }
@@ -698,17 +701,6 @@ public class App{
                     ResultSet rest1=pstmt1.executeQuery();
                     rest1.next();
                     int event_id=rest1.getInt("event_id");
-                    PreparedStatement pstmt2=connection.prepareStatement("DELETE FROM event WHERE event_id=? AND user_id=?");
-                    pstmt2.setInt(2,user_id);
-                    pstmt2.setInt(1,event_id);
-                    // ResultSet rest2=pstmt2.executeUpdate();
-                    int rowsDeleted = pstmt2.executeUpdate();
-                    if(rowsDeleted>0){
-                        System.out.println("\033[35mUser event information has been deleted successfully.\033[0m");
-                    }else{
-                        System.out.println("\033[31mRow not found\033[0m");
-                    }
-                    // pstmt2.executeUpdate();
                     System.out.println("\033[33mThe refund process has begun.It will be completed in 5 business days.\033[0m");
                     cancellation=true;
                     // rest2.next();
@@ -721,4 +713,34 @@ public class App{
             }
             return cancellation;
         }
+        static void analysis (String username){
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+                PreparedStatement pstmt8=connection.prepareStatement("SELECT city FROM user WHERE username=?");
+                pstmt8.setString(1,username);
+                ResultSet restnew=pstmt8.executeQuery();
+                restnew.next();
+                String user_city=restnew.getString("city");
+                PreparedStatement pstmt6=connection.prepareStatement("SELECT l.location_name, COUNT(*) as num_registrations FROM event e JOIN location l ON e.location_id = l.location_id WHERE l.city=? GROUP BY l.location_name ORDER BY num_registrations DESC");
+                    pstmt6.setString(1,user_city);
+    
+                    ResultSet restnew1=pstmt6.executeQuery();
+                    
+                    while(restnew1.next()){
+                        String location=restnew1.getString("location_name");
+                        int number=restnew1.getInt("num_registrations");
+                        System.out.println("The most popular locations are : ");
+                        System.out.println(location +" : "+number);
+
+                    }
+                    
+           
+           
+           
+            }catch(Exception e){
+                System.out.println(e);
+            }
+        }     
+        
     }
