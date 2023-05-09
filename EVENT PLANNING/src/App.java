@@ -4,14 +4,13 @@ import java.util.*;
 
 public class App{
     private static Scanner sc =new Scanner(System.in);
+    private static String analysisfile="Analysisnew.txt";
+
     public static void main(String[] args){
         String filename="Event details.txt";
         System.out.println("\033[31mHello\033[0m");
         String username="";
-        locationhistogram();
-        catererhistogram();
-        decorationhistogram();
-        eventtypehistogram();
+        
         System.out.println("Are you a user or admin : ");
         String usertype=sc.nextLine();
         if(usertype.equalsIgnoreCase("admin")){
@@ -19,7 +18,7 @@ public class App{
             if(adminusername==null){
                 System.out.println("------------------");
             }else{
-                System.out.println("1.User information \n2.Analysis \n3.Event status");
+                System.out.println("1.User information \n2.Analysis \n3.Histograms \n4.Event Status");
                 int option=Integer.parseInt(sc.nextLine());
                 switch(option){
                     case 1 : 
@@ -36,6 +35,12 @@ public class App{
                     eventtypeanalysis();
                     break;
                     case 3:
+                    locationhistogram();
+                    catererhistogram();
+                    decorationhistogram();
+                    eventtypehistogram();
+                    break;
+                    case 4:
                     eventstatusforadmin();
                     break;
                 }
@@ -1031,10 +1036,10 @@ static void locationhistogram(){
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(query);
     
-        
-        int[] locationCount = new int[100]; 
-        String[] locationNames = new String[100]; 
         int count = 0;
+        int[] locationCount = new int[count]; 
+        String[] locationNames = new String[count]; 
+        
         while (resultSet.next()) {
             String locationName = resultSet.getString("location_name");
             boolean found = false;
@@ -1054,6 +1059,7 @@ static void locationhistogram(){
     
         // print the histogram
         System.out.println("");
+        System.out.println("-------------------");
         System.out.println("Location Histogram :");
         System.out.println("-------------------");
         for (int i = 0; i < count; i++) {
@@ -1063,6 +1069,7 @@ static void locationhistogram(){
             }
             System.out.println( " ");
         }
+        writeHistogramToFile(analysisfile, locationNames, locationCount, "Location");
     
     } catch (Exception e) {
         System.out.println(e);
@@ -1108,8 +1115,9 @@ static void catererhistogram(){
     
         // print the histogram
         System.out.println("");
+        System.out.println("------------------");
         System.out.println("Caterer Histogram :");
-        System.out.println("----------------------");
+        System.out.println("------------------");
         for (int i = 0; i < count; i++) {
             System.out.printf("%-20s",catererNames[i]+":" );
             for (int j = 0; j < catererCount[i]; j++) {
@@ -1162,8 +1170,9 @@ static void decorationhistogram(){
     
         // print the histogram
         System.out.println("");
+        System.out.println("---------------------");
         System.out.println("Decoration Histogram :");
-        System.out.println("----------------------");
+        System.out.println("---------------------");
         for (int i = 0; i < count; i++) {
             System.out.printf("%-23s ",decorNames[i]+ ":" );
             for (int j = 0; j < decorCount[i]; j++) {
@@ -1206,6 +1215,7 @@ static void eventtypehistogram(){
     
         // print the histogram
         System.out.println("");
+        System.out.println("----------------------");
         System.out.println("Event Type Histogram :");
         System.out.println("----------------------");
         for (int i = 0; i < count; i++) {
@@ -1223,6 +1233,35 @@ static void eventtypehistogram(){
     }
     
 }
+static void writeHistogramToFile(String filename, String[] labels, int[] counts,String type) {
+    try {
+        FileWriter writer = new FileWriter(filename);
+        writer.write("-------------------\n");
+        writer.write(type+" Histogram :\n");
+        writer.write("-------------------\n");
+        // for (int i = 0; i < labels.length; i++) {
+        //     if (labels[i] != null && counts[i] != 0) {
+        //         writer.write(String.format("%-20s", labels[i] + ":"));
+        //         for (int j = 0; j < counts[i]; j++) {
+        //             writer.write(" | ");
+        //         }
+        //         writer.write("\n");
+        //     }
+        // }
+        
+        for (int i = 0; i < labels.length; i++) {
+            writer.write(String.format("%-20s", labels[i] + ":"));
+            for (int j = 0; j < counts[i]; j++) {
+                writer.write(" | ");
+            }
+            writer.write("\n");
+        }
+        writer.close();
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+}
+
 
 
     }
