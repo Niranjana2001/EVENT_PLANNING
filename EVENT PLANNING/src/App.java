@@ -8,7 +8,32 @@ public class App{
         String filename="Event details.txt";
         System.out.println("\033[31mHello\033[0m");
         String username="";
-        // Output  prompt for user registration or login
+        System.out.println("Are you a user or admin : ");
+        String usertype=sc.nextLine();
+        if(usertype.equalsIgnoreCase("admin")){
+            String adminusername=adminlogin();
+            if(adminusername==null){
+                System.out.println("You are not an Admin");
+            }else{
+                System.out.println("1.User information \n2.Analysis \n3.Event status");
+                int option=Integer.parseInt(sc.nextLine());
+                switch(option){
+                    case 1 : 
+                    userinfo();
+                    break;
+                    case 2:
+                    locationanalysis();
+                    catereranalysis();
+                    decorationteamanalysis();
+                    eventtypeanalysis();
+                    break;
+                    case 3:
+                    eventstatusforadmin();
+                    break;
+                }
+            }
+        }else if(usertype.equalsIgnoreCase("user")){
+              // Output  prompt for user registration or login
         System.out.println("\033[35mDo you want to register or login (Register : 1,Login : 2) :\033[0m ");
         int a =Integer.parseInt(sc.nextLine());
         if(a==1){
@@ -88,6 +113,8 @@ public class App{
             // System.out.println("\033[36mEnter a valid choice\033[0m");
             // break;
         }
+        }
+      
 
 }
 // Eventtype function takes an integer input and returns a string indicating the type of event based on the input option.
@@ -741,6 +768,223 @@ public class App{
             }catch(Exception e){
                 System.out.println(e);
             }
-        }     
+        } 
+        static String adminlogin(){
+            String username=null;
+            String password;
+            boolean passwordcorrect=false;
+            String usernamedupe=null;
+            String adminUsername="Event_Planning";
+            String adminPassword="1234";
+            try{
+                System.out.println("\033[33mEnter your Username :\033[0m");
+                username=sc.nextLine();
+                
+                 
+                if (username.equals(adminUsername)) {
+                    String pass;
+                    System.out.println("\033[35mEnter your Password:\033[0m ");
+                    pass = sc.nextLine();
+                    // String storedPassword = resultSet.getString("password");
+                    passwordcorrect=passwordverification(pass,adminPassword);
+                    
+                } else {
+                    System.out.println("\033[31mTry again.\033[0m");
+                    System.out.println("\033[32mEnter your correct username : \033[0m");
+                    String username1=sc.nextLine();
+                    
+                    if(username1.equals(adminUsername)){
+                        String pass1;
+                        System.out.println("\033[35mEnter your Password:\033[0m ");
+                        pass1 = sc.nextLine();
+                        passwordcorrect = passwordverification(pass1,adminPassword); 
+                        
+                    }else{
+                        System.out.println("\033[32mYou have entered wrong username. Try later\033[0m");
+                    }  
+                }
+            }catch(Exception e){
+                System.out.println(e);
+            }
+            if(passwordcorrect==true){
+                return username;
+            }
+            return usernamedupe;  
+        }    
+
+        static void userinfo(){
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+                // create statement
+            Statement statement = connection.createStatement();
+            
+            // execute query
+            ResultSet rsnew1 = statement.executeQuery("SELECT * FROM user");
+            ResultSetMetaData metaData1 = rsnew1.getMetaData();
+            int columnCount = metaData1.getColumnCount();
+
+            // print header row
+            for (int i = 1; i <= columnCount; i++) {
+                System.out.printf("%-15s", metaData1.getColumnName(i));
+            }
+            System.out.println();
+
+            // print data rows
+            while (rsnew1.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.printf("%-15s", rsnew1.getString(i));
+                }
+                System.out.println();
+            }
+
+            }catch(Exception e){
+                System.out.println(e);
+            }
+            
+        }
+
+        static void locationanalysis(){
+            try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+            // create statement
+            Statement statement1 = connection.createStatement();
+            // execute query
+            ResultSet rsnew2 = statement1.executeQuery("SELECT l.location_name, COUNT(*) as num_registrations FROM event e JOIN location l ON e.location_id = l.location_id GROUP BY l.location_name ORDER BY num_registrations DESC");
+            ResultSetMetaData metaData2 = rsnew2.getMetaData();
+            int columnCount = metaData2.getColumnCount();
+
+            // print header row
+            for (int i = 1; i <= columnCount; i++) {
+                System.out.printf("%-15s", metaData2.getColumnName(i));
+            }
+            System.out.println();
+
+            // print data rows
+            while (rsnew2.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.printf("%-15s", rsnew2.getString(i));
+                }
+                System.out.println();
+            }
+
+            }catch(Exception e){
+                System.out.println(e);
+            }
+            
+        }
+        static void catereranalysis(){
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+                // create statement
+                Statement statement2 = connection.createStatement();
+                // execute query
+                ResultSet rsnew3 = statement2.executeQuery("SELECT c.enterprise_name, COUNT(*) as num_registrations FROM event e JOIN caterer c ON e.caterer_id = c.caterer_id GROUP BY c.enterprise_name ORDER BY num_registrations DESC");
+                ResultSetMetaData metaData3 = rsnew3.getMetaData();
+                int columnCount = metaData3.getColumnCount();
+    
+                // print header row
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.printf("%-15s", metaData3.getColumnName(i));
+                }
+                System.out.println();
+    
+                // print data rows
+                while (rsnew3.next()) {
+                    for (int i = 1; i <= columnCount; i++) {
+                        System.out.printf("%-15s", rsnew3.getString(i));
+                    }
+                    System.out.println();
+                }
+    
+                }catch(Exception e){
+                    System.out.println(e);
+                }
+        }
         
+        static void decorationteamanalysis(){
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+                // create statement
+                Statement statement3 = connection.createStatement();
+                // execute query
+                ResultSet rsnew4 = statement3.executeQuery("SELECT d.enterprise_name, COUNT(*) as num_registrations FROM event e JOIN decoration d ON e.decoration_id = d.decoration_id GROUP BY d.enterprise_name ORDER BY num_registrations DESC");
+                ResultSetMetaData metaData4 = rsnew4.getMetaData();
+                int columnCount = metaData4.getColumnCount();
+    
+                // print header row
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.printf("%-15s", metaData4.getColumnName(i));
+                }
+                System.out.println();
+    
+                // print data rows
+                while (rsnew4.next()) {
+                    for (int i = 1; i <= columnCount; i++) {
+                        System.out.printf("%-15s", rsnew4.getString(i));
+                    }
+                    System.out.println();
+                }
+    
+                }catch(Exception e){
+                    System.out.println(e);
+                }
+        }
+
+        static void eventtypeanalysis(){
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+                // create statement
+                Statement statement8 = connection.createStatement();
+                // execute query
+                ResultSet rsnew8 = statement8.executeQuery("SELECT e.event_name, COUNT(*) as num_registrations FROM event e GROUP BY e.event_name ORDER BY num_registrations DESC");
+                ResultSetMetaData metaData8 = rsnew8.getMetaData();
+                int columnCount = metaData8.getColumnCount();
+    
+                // print header row
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.printf("%-15s", metaData8.getColumnName(i));
+                }
+                System.out.println();
+    
+                // print data rows
+                while (rsnew8.next()) {
+                    for (int i = 1; i <= columnCount; i++) {
+                        System.out.printf("%-15s", rsnew8.getString(i));
+                    }
+                    System.out.println();
+                }
+    
+                }catch(Exception e){
+                    System.out.println(e);
+                }
+        }
+
+        static void eventstatusforadmin(){
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+                // create statement
+            Statement statement7 = connection.createStatement();
+            
+            // execute query
+            ResultSet rsnew7 = statement7.executeQuery("SELECT * FROM event");
+            ResultSetMetaData metaData7 = rsnew7.getMetaData();
+            int columnCount = metaData7.getColumnCount();
+
+            // print header row
+                System.out.format("| %6s | %-20s | %-5s |%-5s |%-5s |%-5s |%-5s |%-5s |%-13s |%-13s |\n",metaData7.getColumnName(1),metaData7.getColumnName(2),metaData7.getColumnName(3),metaData7.getColumnName(4),metaData7.getColumnName(5),metaData7.getColumnName(6),metaData7.getColumnName(7),metaData7.getColumnName(8),metaData7.getColumnName(9),metaData7.getColumnName(10));
+    
+            // print data rows
+            while (rsnew7.next()) {
+                    System.out.format("| %8d | %-20s | %-5s |%-12s |%-7s |%-11s |%-10s |%-13s |%-13s |%-13s |\n", rsnew7.getInt(1), rsnew7.getString(2), rsnew7.getString(3),rsnew7.getInt(4),rsnew7.getInt(5),rsnew7.getInt(6),rsnew7.getInt(7),rsnew7.getInt(8),rsnew7.getString(9),rsnew7.getString(10));
+            }
+            }catch(Exception e){
+                System.out.println(e);
+            }
+        }
     }
