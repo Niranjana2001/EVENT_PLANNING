@@ -13,7 +13,7 @@ public class App{
         if(usertype.equalsIgnoreCase("admin")){
             String adminusername=adminlogin();
             if(adminusername==null){
-                System.out.println("You are not an Admin");
+                System.out.println("------------------");
             }else{
                 System.out.println("1.User information \n2.Analysis \n3.Event status");
                 int option=Integer.parseInt(sc.nextLine());
@@ -22,9 +22,13 @@ public class App{
                     userinfo();
                     break;
                     case 2:
+                    System.out.println("Most popular locations : ");
                     locationanalysis();
+                    System.out.println("Most preferred caterers are : ");
                     catereranalysis();
+                    System.out.println("Most preferred decoration teams are : ");
                     decorationteamanalysis();
+                    System.out.println("Most popular events are : ");
                     eventtypeanalysis();
                     break;
                     case 3:
@@ -776,7 +780,6 @@ public class App{
             String usernamedupe=null;
             String adminUsername="Event_Planning";
             String adminPassword="1234";
-            try{
                 System.out.println("\033[33mEnter your Username :\033[0m");
                 username=sc.nextLine();
                 
@@ -785,11 +788,25 @@ public class App{
                     String pass;
                     System.out.println("\033[35mEnter your Password:\033[0m ");
                     pass = sc.nextLine();
-                    // String storedPassword = resultSet.getString("password");
                     passwordcorrect=passwordverification(pass,adminPassword);
+                    if(!passwordcorrect){
+                        System.out.println("You have entered the wrong password.Please try again");
+                        String pass2=sc.nextLine();
+                        boolean passcorrect=passwordverification(pass2, adminPassword);
+                        if(!passcorrect){
+                            System.out.println("You have entered the wrong password again. Please try later.");
+                        }else{
+                            username=adminUsername;
+                            return username;
+                        }
+                    }else{
+                        username=adminUsername;
+                        return username;
+                    }
+                    
                     
                 } else {
-                    System.out.println("\033[31mTry again.\033[0m");
+                    System.out.println("\033[31mUsername Incorrect. Try again.\033[0m");
                     System.out.println("\033[32mEnter your correct username : \033[0m");
                     String username1=sc.nextLine();
                     
@@ -798,17 +815,31 @@ public class App{
                         System.out.println("\033[35mEnter your Password:\033[0m ");
                         pass1 = sc.nextLine();
                         passwordcorrect = passwordverification(pass1,adminPassword); 
+                        if(!passwordcorrect){
+                            System.out.println("You have entered the wrong password.Please try again");
+                            String pass2=sc.nextLine();
+                            boolean passcorrect=passwordverification(pass2, adminPassword);
+                            if(!passcorrect){
+                                System.out.println("You have entered the wrong password again. Please try later.");
+                                return username;
+                                
+                            }else{
+                                username=adminUsername;
+                                return username;
+                            }
+                        }else{
+                            username=adminUsername;
+                            return username;
+                        }
                         
                     }else{
                         System.out.println("\033[32mYou have entered wrong username. Try later\033[0m");
                     }  
                 }
-            }catch(Exception e){
-                System.out.println(e);
-            }
-            if(passwordcorrect==true){
-                return username;
-            }
+            
+            // if(passwordcorrect==true){
+            //     return username;
+            // }
             return usernamedupe;  
         }    
 
@@ -824,19 +855,30 @@ public class App{
             ResultSetMetaData metaData1 = rsnew1.getMetaData();
             int columnCount = metaData1.getColumnCount();
 
-            // print header row
-            for (int i = 1; i <= columnCount; i++) {
-                System.out.printf("%-15s", metaData1.getColumnName(i));
-            }
-            System.out.println();
-
-            // print data rows
-            while (rsnew1.next()) {
-                for (int i = 1; i <= columnCount; i++) {
-                    System.out.printf("%-15s", rsnew1.getString(i));
-                }
-                System.out.println();
-            }
+           // print header row
+           System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+           System.out.format("| %6s | %-15s | %-15s |%-20s |%-15s |%-13s |%-30s |%-12s |%-10s |%-20s |\n",metaData1.getColumnName(1),metaData1.getColumnName(2),metaData1.getColumnName(3),metaData1.getColumnName(4),metaData1.getColumnName(5),metaData1.getColumnName(6),metaData1.getColumnName(7),metaData1.getColumnName(8),metaData1.getColumnName(9),metaData1.getColumnName(10));
+           System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+       // print data rows
+       while (rsnew1.next()) {
+        String col5Value = rsnew1.getString(5);
+    int maxLineWidth = 25; // set the maximum width for each line
+    String[] words = col5Value.split("\\s+"); // split the value into individual words
+    
+    String wrappedValue = "";
+    int lineLength = 0;
+    for (String word : words) {
+        if (lineLength + word.length() + 1 <= maxLineWidth) { // check if the word can fit on the current line
+            wrappedValue += word + " ";
+            lineLength += word.length() + 1;
+        } else {
+            wrappedValue += String.format("%n%s ", word); // add a line break and start a new line
+            lineLength = word.length() + 1;
+        }
+    }
+               System.out.format("| %7d | %-15s | %-15s |%-20s |%-15s |%-13s |%-30s |%-12s |%-13s |%-20s |\n", rsnew1.getInt(1), rsnew1.getString(2), rsnew1.getString(3),rsnew1.getString(4),wrappedValue.trim(),rsnew1.getString(6),rsnew1.getString(7),rsnew1.getString(8),rsnew1.getString(9),rsnew1.getString(10));
+       }
+       System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
             }catch(Exception e){
                 System.out.println(e);
@@ -856,19 +898,14 @@ public class App{
             int columnCount = metaData2.getColumnCount();
 
             // print header row
-            for (int i = 1; i <= columnCount; i++) {
-                System.out.printf("%-15s", metaData2.getColumnName(i));
-            }
-            System.out.println();
-
+            System.out.println(" ------------------------------------------");
+            System.out.format("| %-20s | %-15s |\n",metaData2.getColumnName(1),metaData2.getColumnName(2));
+            System.out.println(" ------------------------------------------");
             // print data rows
             while (rsnew2.next()) {
-                for (int i = 1; i <= columnCount; i++) {
-                    System.out.printf("%-15s", rsnew2.getString(i));
-                }
-                System.out.println();
+                    System.out.format("| %20s | %-17d |\n", rsnew2.getString(1), rsnew2.getInt(2));
             }
-
+            System.out.println(" ------------------------------------------");
             }catch(Exception e){
                 System.out.println(e);
             }
@@ -881,24 +918,19 @@ public class App{
                 // create statement
                 Statement statement2 = connection.createStatement();
                 // execute query
-                ResultSet rsnew3 = statement2.executeQuery("SELECT c.enterprise_name, COUNT(*) as num_registrations FROM event e JOIN caterer c ON e.caterer_id = c.caterer_id GROUP BY c.enterprise_name ORDER BY num_registrations DESC");
+                ResultSet rsnew3 = statement2.executeQuery("SELECT c.enterprise_name as caterer_name, COUNT(*) as num_registrations FROM event e JOIN caterer c ON e.caterer_id = c.caterer_id GROUP BY c.enterprise_name ORDER BY num_registrations DESC");
                 ResultSetMetaData metaData3 = rsnew3.getMetaData();
                 int columnCount = metaData3.getColumnCount();
     
                 // print header row
-                for (int i = 1; i <= columnCount; i++) {
-                    System.out.printf("%-15s", metaData3.getColumnName(i));
-                }
-                System.out.println();
-    
-                // print data rows
-                while (rsnew3.next()) {
-                    for (int i = 1; i <= columnCount; i++) {
-                        System.out.printf("%-15s", rsnew3.getString(i));
-                    }
-                    System.out.println();
-                }
-    
+                System.out.println(" -----------------------------------------------");
+                System.out.format("| %25s | %-17s |\n",metaData3.getColumnName(1),metaData3.getColumnName(2));
+                System.out.println(" -----------------------------------------------");
+            // print data rows
+            while (rsnew3.next()) {
+                    System.out.format("| %25s | %-17d |\n", rsnew3.getString(1), rsnew3.getInt(2));
+            }
+            System.out.println(" -----------------------------------------------");
                 }catch(Exception e){
                     System.out.println(e);
                 }
@@ -916,19 +948,14 @@ public class App{
                 int columnCount = metaData4.getColumnCount();
     
                 // print header row
-                for (int i = 1; i <= columnCount; i++) {
-                    System.out.printf("%-15s", metaData4.getColumnName(i));
+                System.out.println(" -----------------------------------------------");
+                System.out.format("| %25s | %-17s |\n",metaData4.getColumnName(1),metaData4.getColumnName(2));
+                System.out.println(" -----------------------------------------------");
+            // print data rows
+            while (rsnew4.next()) {
+                    System.out.format("| %25s | %-17d |\n", rsnew4.getString(1), rsnew4.getInt(2));
                 }
-                System.out.println();
-    
-                // print data rows
-                while (rsnew4.next()) {
-                    for (int i = 1; i <= columnCount; i++) {
-                        System.out.printf("%-15s", rsnew4.getString(i));
-                    }
-                    System.out.println();
-                }
-    
+                System.out.println(" -----------------------------------------------");
                 }catch(Exception e){
                     System.out.println(e);
                 }
@@ -946,18 +973,14 @@ public class App{
                 int columnCount = metaData8.getColumnCount();
     
                 // print header row
-                for (int i = 1; i <= columnCount; i++) {
-                    System.out.printf("%-15s", metaData8.getColumnName(i));
+                System.out.println(" -----------------------------------------------");
+                System.out.format("| %25s | %-17s |\n",metaData8.getColumnName(1),metaData8.getColumnName(2));
+                System.out.println(" -----------------------------------------------");
+            // print data rows
+            while (rsnew8.next()) {
+                    System.out.format("| %25s | %-17d |\n", rsnew8.getString(1), rsnew8.getInt(2));
                 }
-                System.out.println();
-    
-                // print data rows
-                while (rsnew8.next()) {
-                    for (int i = 1; i <= columnCount; i++) {
-                        System.out.printf("%-15s", rsnew8.getString(i));
-                    }
-                    System.out.println();
-                }
+                System.out.println(" -----------------------------------------------");
     
                 }catch(Exception e){
                     System.out.println(e);
@@ -977,12 +1000,14 @@ public class App{
             int columnCount = metaData7.getColumnCount();
 
             // print header row
+            System.out.println(" -------------------------------------------------------------------------------------------------------------------------------------------");
                 System.out.format("| %6s | %-20s | %-5s |%-5s |%-5s |%-5s |%-5s |%-5s |%-13s |%-13s |\n",metaData7.getColumnName(1),metaData7.getColumnName(2),metaData7.getColumnName(3),metaData7.getColumnName(4),metaData7.getColumnName(5),metaData7.getColumnName(6),metaData7.getColumnName(7),metaData7.getColumnName(8),metaData7.getColumnName(9),metaData7.getColumnName(10));
-    
+                System.out.println(" -------------------------------------------------------------------------------------------------------------------------------------------");
             // print data rows
             while (rsnew7.next()) {
                     System.out.format("| %8d | %-20s | %-5s |%-12s |%-7s |%-11s |%-10s |%-13s |%-13s |%-13s |\n", rsnew7.getInt(1), rsnew7.getString(2), rsnew7.getString(3),rsnew7.getInt(4),rsnew7.getInt(5),rsnew7.getInt(6),rsnew7.getInt(7),rsnew7.getInt(8),rsnew7.getString(9),rsnew7.getString(10));
             }
+            System.out.println(" -------------------------------------------------------------------------------------------------------------------------------------------");
             }catch(Exception e){
                 System.out.println(e);
             }
