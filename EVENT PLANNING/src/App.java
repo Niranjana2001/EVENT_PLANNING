@@ -8,6 +8,10 @@ public class App{
         String filename="Event details.txt";
         System.out.println("\033[31mHello\033[0m");
         String username="";
+        locationhistogram();
+        catererhistogram();
+        decorationhistogram();
+        eventtypehistogram();
         System.out.println("Are you a user or admin : ");
         String usertype=sc.nextLine();
         if(usertype.equalsIgnoreCase("admin")){
@@ -987,4 +991,213 @@ public class App{
                 System.out.println(e);
             }
         }
+static void locationhistogram(){
+
+    try{
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+    
+        String query = "SELECT event.event_id, location.location_name " +
+                       "FROM event " +
+                       "JOIN location " +
+                       "ON event.location_id = location.location_id";
+    
+        
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+    
+        
+        int[] locationCount = new int[100]; 
+        String[] locationNames = new String[100]; 
+        int count = 0;
+        while (resultSet.next()) {
+            String locationName = resultSet.getString("location_name");
+            boolean found = false;
+            for (int i = 0; i < count; i++) {
+                if (locationNames[i].equals(locationName)) {
+                    locationCount[i]++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                locationNames[count] = locationName;
+                locationCount[count] = 1;
+                count++;
+            }
+        }
+    
+        // print the histogram
+        System.out.println("");
+        System.out.println("Location Histogram :");
+        System.out.println("-------------------");
+        for (int i = 0; i < count; i++) {
+            System.out.printf("%-20s",locationNames[i]+":" );
+            for (int j = 0; j < locationCount[i]; j++) {
+                System.out.print(" | ");
+            }
+            System.out.println( " ");
+        }
+    
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+    
+
+}
+static void catererhistogram(){
+
+    try{
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+    
+        String query = "SELECT event.event_id, caterer.enterprise_name " +
+                       "FROM event " +
+                       "JOIN caterer " +
+                       "ON event.caterer_id = caterer.caterer_id";
+    
+        
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+    
+        
+        int[] catererCount = new int[100]; 
+        String[] catererNames = new String[100]; 
+        int count = 0;
+        while (resultSet.next()) {
+            String catererName = resultSet.getString("enterprise_name");
+            boolean found = false;
+            for (int i = 0; i < count; i++) {
+                if (catererNames[i].equals(catererName)) {
+                    catererCount[i]++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                catererNames[count] = catererName;
+                catererCount[count] = 1;
+                count++;
+            }
+        }
+    
+        // print the histogram
+        System.out.println("");
+        System.out.println("Caterer Histogram :");
+        System.out.println("----------------------");
+        for (int i = 0; i < count; i++) {
+            System.out.printf("%-20s",catererNames[i]+":" );
+            for (int j = 0; j < catererCount[i]; j++) {
+                System.out.print(" | ");
+            }
+            System.out.println( " ");
+        }
+    
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+    
+
+}
+static void decorationhistogram(){
+
+    try{
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+    
+        String query = "SELECT event.event_id, decoration.enterprise_name " +
+                       "FROM event " +
+                       "JOIN decoration " +
+                       "ON event.decoration_id = decoration.decoration_id";
+    
+        
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+    
+        
+        int[] decorCount = new int[100]; 
+        String[] decorNames = new String[100]; 
+        int count = 0;
+        while (resultSet.next()) {
+            String decorName = resultSet.getString("enterprise_name");
+            boolean found = false;
+            for (int i = 0; i < count; i++) {
+                if (decorNames[i].equals(decorName)) {
+                    decorCount[i]++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                decorNames[count] = decorName;
+                decorCount[count] = 1;
+                count++;
+            }
+        }
+    
+        // print the histogram
+        System.out.println("");
+        System.out.println("Decoration Histogram :");
+        System.out.println("----------------------");
+        for (int i = 0; i < count; i++) {
+            System.out.printf("%-23s ",decorNames[i]+ ":" );
+            for (int j = 0; j < decorCount[i]; j++) {
+                System.out.print(" | ");
+            }
+            System.out.println( " ");
+        }
+    
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+    
+
+}
+static void eventtypehistogram(){
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery("SELECT event_name FROM event ");
+        int[] eventCount = new int[100]; 
+        String[] eventNames = new String[100]; 
+        int count = 0;
+        while (rs.next()) {
+            String eventName = rs.getString("event_name");
+            boolean found = false;
+            for (int i = 0; i < count; i++) {
+                if (eventNames[i].equals(eventName)) {
+                    eventCount[i]++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                eventNames[count] = eventName;
+                eventCount[count] = 1;
+                count++;
+            }
+        }
+    
+        // print the histogram
+        System.out.println("");
+        System.out.println("Event Type Histogram :");
+        System.out.println("----------------------");
+        for (int i = 0; i < count; i++) {
+            System.out.printf("%-20s ",eventNames[i]+ ":" );
+            for (int j = 0; j < eventCount[i]; j++) {
+                System.out.print(" | ");
+            }
+            System.out.println( " ");
+        }
+    
+       
+    
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+    
+}
+
+
     }
