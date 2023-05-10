@@ -4,9 +4,8 @@ import java.util.*;
 
 public class App{
     private static Scanner sc =new Scanner(System.in);
-    private static String analysisfile="Analysisnew.txt";
-
     public static void main(String[] args){
+        
         String filename="Event details.txt";
         System.out.println("\033[31mHello\033[0m");
         String username="";
@@ -692,19 +691,19 @@ public class App{
                     if(decorBooked==true && catererBooked==true && !locationName.equals("")){
                         try{
                             FileWriter write=new FileWriter(filename,true);
-                            write.write("\033[34mDETAILS OF THE EVENT BOOKED BY "+username+"\n\033[0m");
-                            write.write("\033[34mEvent ID : "+res12.getInt("event_id")+"\n\033[0m");
-                            write.write("\033[34mType of Event : "+res12.getString("event_name")+"\n\033[0m");
-                            write.write("\033[34mDate of Event : "+res12.getString("event_date")+"\n\033[0m");
-                            write.write("\033[34mLocation of the Event : "+locationName+"\n\033[0m");
-                            if(catererBooked=true){
-                                write.write("\033[34mCaterer for the Event : "+caterername+"\n\033[0m");
+                            write.write("\nDETAILS OF THE EVENT BOOKED BY "+username+"\n");
+                            write.write("Event ID : "+res12.getInt("event_id")+"\n");
+                            write.write("Type of Event : "+res12.getString("event_name")+"\n");
+                            write.write("Date of Event : "+res12.getString("event_date")+"\n");
+                            write.write("Location of the Event : "+locationName+"\n");
+                            if(catererBooked==true){
+                                write.write("Caterer for the Event : "+caterername+"\n");
                             }
-                            if(decorBooked=true){
-                                write.write("\033[34mDecoration team for the event : "+decteamname+"\n\033[0m");
+                            if(decorBooked==true){
+                                write.write("Decoration team for the event : "+decteamname+"\n");
                             }
-                            if(cancellation=true){
-                                write.write("\033[31mThe event has been cancelled \n\033[0m");
+                            if(cancellation==true){
+                                write.write("The event has been cancelled \n");
                             }
                             write.close();
                         }catch(Exception e){
@@ -865,9 +864,9 @@ public class App{
             int columnCount = metaData1.getColumnCount();
 
            // print header row
-           System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-           System.out.format("| %6s | %-15s | %-15s |%-20s |%-15s |%-13s |%-30s |%-12s |%-10s |%-20s |\n",metaData1.getColumnName(1),metaData1.getColumnName(2),metaData1.getColumnName(3),metaData1.getColumnName(4),metaData1.getColumnName(5),metaData1.getColumnName(6),metaData1.getColumnName(7),metaData1.getColumnName(8),metaData1.getColumnName(9),metaData1.getColumnName(10));
-           System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+           System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------");
+           System.out.format("| %6s | %-13s | %-10s |%-15s |%-10s |%-10s |%-19s |%-10s |%-10s |%-15s |\n",metaData1.getColumnName(1),metaData1.getColumnName(2),metaData1.getColumnName(3),metaData1.getColumnName(4),metaData1.getColumnName(5),metaData1.getColumnName(6),metaData1.getColumnName(7),metaData1.getColumnName(8),metaData1.getColumnName(9),metaData1.getColumnName(10));
+           System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------");
        // print data rows
        while (rsnew1.next()) {
         String col5Value = rsnew1.getString(5);
@@ -885,9 +884,9 @@ public class App{
             lineLength = word.length() + 1;
         }
     }
-               System.out.format("| %7d | %-15s | %-15s |%-20s |%-15s |%-13s |%-30s |%-12s |%-13s |%-20s |\n", rsnew1.getInt(1), rsnew1.getString(2), rsnew1.getString(3),rsnew1.getString(4),wrappedValue.trim(),rsnew1.getString(6),rsnew1.getString(7),rsnew1.getString(8),rsnew1.getString(9),rsnew1.getString(10));
+               System.out.format("| %7d | %-13s | %-10s |%-15s |%-10s |%-10s |%-19s |%-12s |%-13s |%-15s |\n", rsnew1.getInt(1), rsnew1.getString(2), rsnew1.getString(3),rsnew1.getString(4),wrappedValue.trim(),rsnew1.getString(6),rsnew1.getString(7),rsnew1.getString(8),rsnew1.getString(9),rsnew1.getString(10));
        }
-       System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+       System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------");
 
             }catch(Exception e){
                 System.out.println(e);
@@ -1022,7 +1021,8 @@ public class App{
             }
         }
 static void locationhistogram(){
-
+    int[] locationCount = new int[100]; 
+        String[] locationNames = new String[100]; 
     try{
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/event_planning","root","mysql1234");
@@ -1036,10 +1036,9 @@ static void locationhistogram(){
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(query);
     
-        int count = 0;
-        int[] locationCount = new int[count]; 
-        String[] locationNames = new String[count]; 
         
+        
+        int count = 0;
         while (resultSet.next()) {
             String locationName = resultSet.getString("location_name");
             boolean found = false;
@@ -1069,12 +1068,12 @@ static void locationhistogram(){
             }
             System.out.println( " ");
         }
-        writeHistogramToFile(analysisfile, locationNames, locationCount, "Location");
+        
     
     } catch (Exception e) {
         System.out.println(e);
     }
-    
+   
 
 }
 static void catererhistogram(){
@@ -1233,35 +1232,6 @@ static void eventtypehistogram(){
     }
     
 }
-static void writeHistogramToFile(String filename, String[] labels, int[] counts,String type) {
-    try {
-        FileWriter writer = new FileWriter(filename);
-        writer.write("-------------------\n");
-        writer.write(type+" Histogram :\n");
-        writer.write("-------------------\n");
-        // for (int i = 0; i < labels.length; i++) {
-        //     if (labels[i] != null && counts[i] != 0) {
-        //         writer.write(String.format("%-20s", labels[i] + ":"));
-        //         for (int j = 0; j < counts[i]; j++) {
-        //             writer.write(" | ");
-        //         }
-        //         writer.write("\n");
-        //     }
-        // }
-        
-        for (int i = 0; i < labels.length; i++) {
-            writer.write(String.format("%-20s", labels[i] + ":"));
-            for (int j = 0; j < counts[i]; j++) {
-                writer.write(" | ");
-            }
-            writer.write("\n");
-        }
-        writer.close();
-    } catch (Exception e) {
-        System.out.println(e);
-    }
-}
-
 
 
     }
